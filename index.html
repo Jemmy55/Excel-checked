@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="index.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+      integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+      integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+      crossorigin="anonymous"
+    ></script>
+    <title>Kiểm tra dữ liệu v0.3</title>
+  </head>
+
+  <body>
+    <!-- <div>
+        <input type="file" accept=".scv,.xls,.xlsx" class="inputfiles" id="TEST" multiple>
+        <label for="TEST" id="nameTEST">Choose a file</label>
+    </div> -->
+    <div
+      class="modal fade"
+      id="myModal"
+      tabindex="-1"
+      aria-labelledby="myModalLabel"
+      aria-modal="true"
+      role="dialog"
+      style="display: none"
+    >
+      <div class="modal-dialog loading">
+        <div class="modal-content">
+          <div class="modal-body">
+            <div class="d-flex justify-content-center">
+              <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+            <div
+              class="progress"
+              role="progressbar"
+              aria-label="Example with label"
+              aria-valuenow="25"
+              aria-valuemin="0"
+              aria-valuemax="100"
+            >
+              <div class="progress-bar">25%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ul class="nav nav-tabs mt-2" id="myTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link active"
+          id="home"
+          data-bs-toggle="tab"
+          data-bs-target="#home-tab"
+          type="button"
+          role="tab"
+          aria-controls="home-tab"
+          aria-selected="true"
+        >
+          Nhập
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="DAT-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#DAT-tab-pane"
+          type="button"
+          role="tab"
+          aria-controls="DAT-tab-pane"
+          aria-selected="false"
+        >
+          Đạt
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="TRUOT-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#TRUOT-tab-pane"
+          type="button"
+          role="tab"
+          aria-controls="TRUOT-tab-pane"
+          aria-selected="false"
+        >
+          Trượt
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="VANG-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#VANG-tab-pane"
+          type="button"
+          role="tab"
+          aria-controls="DAT-tab-pane"
+          aria-selected="false"
+        >
+          Vắng
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="KQ-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#KQ-tab-pane"
+          type="button"
+          role="tab"
+          aria-controls="DAT-tab-pane"
+          aria-selected="false"
+        >
+          KQ
+        </button>
+      </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+      <div
+        class="tab-pane fade show active"
+        id="home-tab"
+        role="tabpanel"
+        aria-labelledby="home-tab"
+        tabindex="0"
+      >
+        <!-- toast -->
+        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+          <div
+            id="liveToast"
+            class="toast"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+            data-bs-config='{"delay":3500}'
+          >
+            <div class="toast-header">
+              <strong class="me-auto alertTitle"></strong>
+              <strong class="manyFile"></strong>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="toast"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="toast-body alertBody"></div>
+            <div class="timer active"></div>
+          </div>
+        </div>
+
+        <div class="main">
+          <div class="h1">
+            <h1>Kiểm Tra Dữ Liệu</h1>
+          </div>
+          <div class="Data">
+            <div class="LT box">
+              <h5>Lý Thuyết</h5>
+              <input
+                type="file"
+                accept=".scv,.xls,.xlsx"
+                class="inputfiles"
+                id="LT"
+                multiple
+              />
+              <label for="LT" id="nameLT">Chọn thư mục</label>
+            </div>
+            <div class="MP box">
+              <h5>Mô Phỏng</h5>
+              <input
+                type="file"
+                accept=".scv,.xls,.xlsx"
+                class="inputfiles"
+                id="MP"
+                multiple
+              />
+              <label for="MP" id="nameMP">Chọn thư mục</label>
+            </div>
+            <div class="HINH box">
+              <h5>Hình</h5>
+              <input
+                type="file"
+                accept=".scv,.xls,.xlsx"
+                class="inputfiles"
+                id="H"
+                multiple
+              />
+              <label for="H" id="nameH">Chọn thư mục</label>
+            </div>
+            <div class="DUONG box">
+              <h5>Đường</h5>
+              <input
+                type="file"
+                accept=".scv,.xls,.xlsx"
+                class="inputfiles"
+                id="D"
+                multiple
+              />
+              <label for="D" id="nameD">Chọn thư mục</label>
+            </div>
+            <div class="TONG box">
+              <h5>Tổng</h5>
+              <input
+                type="file"
+                accept=".scv,.xls,.xlsx"
+                class="inputfiles"
+                id="T"
+                multiple
+              />
+              <label for="T" id="nameT">Chọn thư mục</label>
+            </div>
+            <div class="TL box">
+              <h5>Thi Lại</h5>
+              <input
+                type="file"
+                accept=".scv,.xls,.xlsx"
+                class="inputfiles"
+                id="TL"
+                multiple
+              />
+              <label for="TL" id="nameTL">Chọn thư mục</label>
+            </div>
+          </div>
+          <button class="CheckValue">Nhập Dữ Liệu</button>
+        </div>
+      </div>
+      <div
+        class="tab-pane fade"
+        id="DAT-tab-pane"
+        role="tabpanel"
+        aria-labelledby="DAT-tab"
+        tabindex="0"
+      >
+        <div class="sticky sticky-0">
+          <div class="flex justify-content border-table">
+            <div class="left">
+              <div class="info sticky sticky-1">
+                <div class="info-table-D-DAT margin-2"></div>
+              </div>
+              <table
+                class="table table-striped table-hover caption-top table-bordered"
+              >
+                <thead class="table-dark sticky sticky-79">
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Hạng</th>
+                    <th scope="col">SBD</th>
+                    <th scope="col">Tên</th>
+                    <th scope="col">Năm Sinh</th>
+                  </tr>
+                </thead>
+                <tbody class="table-D-DAT"></tbody>
+              </table>
+            </div>
+            <div class="right">
+              <div class="info sticky sticky-1">
+                <div class="info-table-T-DAT margin-2"></div>
+              </div>
+              <table
+                class="table table-striped table-hover caption-top table-bordered"
+              >
+                <thead class="table-dark sticky sticky-79">
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Hạng</th>
+                    <th scope="col">STT</th>
+                    <th scope="col">Tên</th>
+                    <th scope="col">Năm Sinh</th>
+                  </tr>
+                </thead>
+                <tbody class="table-T-DAT"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="tab-pane fade"
+        id="TRUOT-tab-pane"
+        role="tabpanel"
+        aria-labelledby="TRUOT-tab"
+        tabindex="0"
+      >
+        <div class="flex border-table justify-content">
+          <div class="left">
+            <div class="info sticky sticky-1">
+              <div class="info-table-Truot-TRUOT margin-2"></div>
+            </div>
+            <table
+              class="table table-striped table-hover caption-top table-bordered"
+            >
+              <thead class="table-dark sticky sticky-79">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Hạng</th>
+                  <th scope="col">SBD</th>
+                  <th scope="col">Tên</th>
+                  <th scope="col">Năm Sinh</th>
+                  <th scope="col">Danh Sách</th>
+                </tr>
+              </thead>
+              <tbody class="table-Truot-TRUOT"></tbody>
+            </table>
+          </div>
+          <div class="right">
+            <div class="info sticky sticky-1">
+              <div class="info-table-T-TRUOT margin-2"></div>
+            </div>
+            <table
+              class="table table-striped table-hover caption-top table-bordered"
+            >
+              <thead class="table-dark sticky sticky-79">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Hạng</th>
+                  <th scope="col">STT</th>
+                  <th scope="col">Tên</th>
+                  <th scope="col">Năm Sinh</th>
+                  <th scope="col">Danh Sách</th>
+                </tr>
+              </thead>
+              <tbody class="table-T-TRUOT"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div
+        class="tab-pane fade"
+        id="VANG-tab-pane"
+        role="tabpanel"
+        aria-labelledby="VANG-tab"
+        tabindex="0"
+      >
+        <div class="flex border-table justify-content">
+          <div class="left">
+            <div class="info sticky sticky-1">
+              <div class="info-table-Vang-VANG margin-2"></div>
+            </div>
+            <table
+              class="table table-striped table-hover caption-top table-bordered"
+            >
+              <thead class="table-dark sticky sticky-79">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Hạng</th>
+                  <th scope="col">SBD</th>
+                  <th scope="col">Tên</th>
+                  <th scope="col">Năm Sinh</th>
+                  <th scope="col">Danh Sách</th>
+                </tr>
+              </thead>
+              <tbody class="table-Vang-VANG"></tbody>
+            </table>
+          </div>
+          <div class="right">
+            <div class="info sticky sticky-1">
+              <div class="info-table-T-VANG margin-2"></div>
+            </div>
+            <table
+              class="table table-striped table-hover caption-top table-bordered"
+            >
+              <thead class="table-dark sticky sticky-79">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Hạng</th>
+                  <th scope="col">STT</th>
+                  <th scope="col">Tên</th>
+                  <th scope="col">Năm Sinh</th>
+                  <th scope="col">Danh Sách</th>
+                </tr>
+              </thead>
+              <tbody class="table-T-VANG"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div
+        class="tab-pane fade"
+        id="KQ-tab-pane"
+        role="tabpanel"
+        aria-labelledby="KQ-tab"
+        tabindex="0"
+      >
+        <div class="table-KQ">
+          <table
+            class="table table-striped table-hover caption-top table-bordered"
+          >
+            <thead class="table-dark text-center">
+              <tr>
+                <th class="font-margin" scope="col" rowspan="2">HẠNG GPLX</th>
+                <th class="font-margin" scope="col" rowspan="2">
+                  TỔNG SỐ HỒ SƠ
+                </th>
+                <th scope="col" colspan="3">THI LÝ THUYẾT</th>
+                <th scope="col" colspan="3">THI MÔ PHỎNG</th>
+                <th scope="col" colspan="3">LÁI XE TRONG HÌNH</th>
+                <th scope="col" colspan="3">LÁI XE TRÊN ĐƯỜNG</th>
+                <th class="font-margin" scope="col" rowspan="2">KẾT QUẢ ĐẬU</th>
+              </tr>
+              <tr>
+                <th class="right-br" scope="col">TỔNG SỐ</th>
+                <th class="right-br" scope="col">ĐẠT</th>
+                <th scope="col">RỚT</th>
+                <th class="right-br" scope="col">TỔNG SỐ</th>
+                <th class="right-br" scope="col">ĐẠT</th>
+                <th scope="col">RỚT</th>
+                <th class="right-br" scope="col">TỔNG SỐ</th>
+                <th class="right-br" scope="col">ĐẠT</th>
+                <th scope="col">RỚT</th>
+                <th class="right-br" scope="col">TỔNG SỐ</th>
+                <th class="right-br" scope="col">ĐẠT</th>
+                <th scope="col">RỚT</th>
+              </tr>
+            </thead>
+            <tbody class="text-center render-KQ"></tbody>
+          </table>
+        </div>
+
+        <div class="table-Money margin-t-10">
+          <table
+            class="table table-striped table-hover caption-top table-bordered"
+          >
+            <thead class="table-dark text-center">
+              <tr>
+                <th scope="col">SỐ TT</th>
+                <th scope="col">NỘI DUNG</th>
+                <th scope="col">SỐ LƯỢNG</th>
+                <th scope="col">MỖI THÍ SINH NỘP</th>
+                <th scope="col">THÀNH TIỀN</th>
+              </tr>
+            </thead>
+            <tbody class="text-center render-Money"></tbody>
+            <tbody class="text-center render-MoneyTotal">
+              <tr>
+                <td colspan="4"><strong>Tổng Cộng</strong></td>
+                <td><strong class="totalMoney">0</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="setupMoney.js"></script>
+    <script src="index.js"></script>
+    <script src="tool.js"></script>
+  </body>
+</html>
